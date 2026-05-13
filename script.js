@@ -231,9 +231,17 @@ function buildOrcCard(o) {
         </table>
       </div>
       <div style="display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;">
-        <button class="btn btn-primary btn-sm" onclick="formOrcamento('${o.id}')">✏ Editar Orçamento</button>
+        <button class="btn btn-primary btn-sm" onclick="formOrcamento('${o.id}')">✏ Editar</button>
         <button class="btn btn-gold btn-sm" onclick="converterParaObra('${o.id}')">✓ Converter em Obra</button>
-        <button class="btn btn-danger btn-sm" onclick="excluirObra('${o.id}')">🗑 Excluir</button>
+        <button class="btn-share whats" onclick="compartilharWhats('${o.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.117 1.528 5.847L.057 23.854l6.158-1.616A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.213-3.714.974.99-3.626-.235-.373A9.818 9.818 0 1 1 12 21.818z"/></svg>
+          WhatsApp
+        </button>
+        <button class="btn-share print" onclick="imprimirOrcamento('${o.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimir / PDF
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="excluirObra('${o.id}')">🗑</button>
       </div>
     </div>`;
 }
@@ -738,6 +746,302 @@ function excluirDespesa(id){
   if(!confirm('Excluir?'))return;
   state.despesas=state.despesas.filter(d=>d.id!==id);
   DB.save(state);toast('Removido.','info');renderDespesas();
+}
+
+// ══════════════════════════════════════════════════════
+// ORÇAMENTO — IMPRESSÃO / WHATSAPP / PDF
+// ══════════════════════════════════════════════════════
+
+function gerarHTMLOrcamento(id) {
+  const o  = state.obras.find(x=>x.id===id);
+  const cl = getC(o.clienteId);
+  const c  = calcObra(o);
+  const data = fmtData(o.dataInicio);
+  const validade = (() => {
+    const d = new Date(o.dataInicio||Date.now());
+    d.setDate(d.getDate()+30);
+    return fmtData(d.toISOString().slice(0,10));
+  })();
+
+  const linhasItens = o.itens.map((it,i) => {
+    const s = getS(it.servicoId);
+    return `
+      <tr>
+        <td class="td-num">${i+1}</td>
+        <td>${s.nome}</td>
+        <td class="td-center">${s.unidade}</td>
+        <td class="td-center">${it.quantidade}</td>
+        <td class="td-right">${fmt(s.venda)}</td>
+        <td class="td-right td-bold">${fmt(s.venda*it.quantidade)}</td>
+      </tr>`;
+  }).join('');
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Orçamento — ${o.nome}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Barlow',sans-serif;background:#fff;color:#1a1f2e;font-size:13px;padding:0;}
+  .page{max-width:800px;margin:0 auto;padding:40px 48px;min-height:100vh;}
+
+  /* Header */
+  .header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:24px;border-bottom:3px solid #1a2c5b;margin-bottom:32px;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-logo{width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid #e0e4ed;}
+  .brand-logo img{width:100%;height:100%;object-fit:cover;}
+  .brand-name{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#1a2c5b;line-height:1;text-transform:uppercase;letter-spacing:2px;}
+  .brand-sub{font-size:11px;color:#8892aa;text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+  .brand-contact{font-size:11.5px;color:#4a5270;margin-top:6px;line-height:1.7;}
+  .doc-info{text-align:right;}
+  .doc-label{font-size:10px;color:#8892aa;text-transform:uppercase;letter-spacing:0.8px;}
+  .doc-num{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:#b8922a;line-height:1;letter-spacing:1px;}
+  .doc-date{font-size:12px;color:#4a5270;margin-top:4px;}
+
+  /* Título */
+  .orcamento-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#1a2c5b;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+  .orcamento-tag{display:inline-block;background:#fdf6e8;color:#b8922a;border:1px solid #e8d5a0;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;}
+
+  /* Cliente */
+  .section-label{font-size:10px;font-weight:600;color:#8892aa;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;}
+  .client-box{background:#f7f8fa;border:1px solid #e0e4ed;border-radius:8px;padding:14px 18px;margin-bottom:28px;}
+  .client-name{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#1a2c5b;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;}
+  .client-info{font-size:12px;color:#4a5270;line-height:1.7;}
+
+  /* Tabela */
+  table{width:100%;border-collapse:collapse;margin-bottom:24px;}
+  thead th{background:#1a2c5b;color:#fff;padding:10px 12px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;font-family:'Barlow',sans-serif;}
+  thead th:first-child{border-radius:6px 0 0 0;}
+  thead th:last-child{border-radius:0 6px 0 0;}
+  tbody tr{border-bottom:1px solid #e0e4ed;}
+  tbody tr:nth-child(even){background:#f7f8fa;}
+  tbody tr:hover{background:#eef1f8;}
+  td{padding:10px 12px;color:#1a1f2e;}
+  .td-num{color:#8892aa;width:32px;text-align:center;}
+  .td-center{text-align:center;}
+  .td-right{text-align:right;}
+  .td-bold{font-weight:600;color:#1a2c5b;font-family:'Rajdhani',sans-serif;font-size:15px;}
+
+  /* Totais */
+  .totals{display:flex;justify-content:flex-end;margin-bottom:28px;}
+  .totals-box{width:260px;}
+  .total-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #e0e4ed;font-size:13px;color:#4a5270;}
+  .total-row:last-child{border-bottom:none;padding-top:10px;margin-top:4px;}
+  .total-row.main{font-size:17px;font-weight:700;color:#1a2c5b;border-top:2px solid #1a2c5b;}
+  .total-row.main span:last-child{color:#b8922a;font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;letter-spacing:0.5px;}
+
+  /* Observações / Validade */
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+  .info-box{background:#f7f8fa;border:1px solid #e0e4ed;border-radius:8px;padding:14px 18px;}
+  .info-box-title{font-size:10px;font-weight:600;color:#8892aa;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:6px;}
+  .info-box-content{font-size:12.5px;color:#1a1f2e;line-height:1.6;}
+
+  /* Footer */
+  .footer{border-top:2px solid #1a2c5b;padding-top:20px;display:flex;justify-content:space-between;align-items:center;}
+  .footer-brand{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#1a2c5b;text-transform:uppercase;letter-spacing:1px;}
+  .footer-note{font-size:11px;color:#8892aa;text-align:right;line-height:1.6;}
+
+  /* Assinatura */
+  .assinatura{margin-top:56px;display:flex;justify-content:space-between;}
+  .ass-line{text-align:center;width:200px;}
+  .ass-traço{border-top:1px solid #1a2c5b;padding-top:6px;font-size:11px;color:#4a5270;}
+
+  @media print{
+    body{padding:0;}
+    .page{padding:20px 28px;}
+    .no-print{display:none!important;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Barra de ações (some ao imprimir) -->
+  <div class="no-print" style="display:flex;gap:10px;margin-bottom:20px;padding:12px 16px;background:#f7f8fa;border-radius:8px;border:1px solid #e0e4ed;flex-wrap:wrap;">
+    <button onclick="window.print()" style="display:flex;align-items:center;gap:7px;padding:9px 18px;background:#1a2c5b;color:#fff;border:none;border-radius:8px;font-family:Outfit,sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;">
+      🖨️ Imprimir / Salvar PDF
+    </button>
+    <button onclick="compartilharNativo()" id="btnShare" style="display:flex;align-items:center;gap:7px;padding:9px 18px;background:#b8922a;color:#fff;border:none;border-radius:8px;font-family:Outfit,sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;">
+      📤 Compartilhar
+    </button>
+    <a id="btnWhats" href="#" target="_blank" style="display:flex;align-items:center;gap:7px;padding:9px 18px;background:#25d366;color:#fff;text-decoration:none;border-radius:8px;font-family:Outfit,sans-serif;font-size:13.5px;font-weight:500;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.117 1.528 5.847L.057 23.854l6.158-1.616A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.213-3.714.974.99-3.626-.235-.373A9.818 9.818 0 1 1 12 21.818z"/></svg>
+      Enviar no WhatsApp
+    </a>
+    <button onclick="window.close()" style="padding:9px 14px;background:none;border:1px solid #e0e4ed;border-radius:8px;font-family:Outfit,sans-serif;font-size:13px;cursor:pointer;color:#4a5270;">
+      ✕ Fechar
+    </button>
+  </div>
+
+  <!-- Cabeçalho -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-logo">
+        <img src="logo.png" alt="RM Gesso" onerror="this.parentNode.innerHTML='<div style=\\'width:100%;height:100%;background:#1a2c5b;display:flex;align-items:center;justify-content:center;color:#b8922a;font-family:serif;font-size:18px;font-weight:700;\\'>RM</div>'"/>
+      </div>
+      <div>
+        <div class="brand-name">RM Gesso</div>
+        <div class="brand-sub">Drywall · Forro PVC · Gesso</div>
+        <div class="brand-contact">
+          📱 (19) 99999-0000<br>
+          📧 contato@rmgesso.com.br
+        </div>
+      </div>
+    </div>
+    <div class="doc-info">
+      <div class="doc-label">Orçamento Nº</div>
+      <div class="doc-num">${String(state.obras.filter(x=>x.status==='orcamento').findIndex(x=>x.id===id)+1).padStart(3,'0')}</div>
+      <div class="doc-date">Emitido em: ${data}</div>
+    </div>
+  </div>
+
+  <!-- Título do orçamento -->
+  <div class="orcamento-title">${o.nome}</div>
+  <div class="orcamento-tag">📋 Proposta Comercial</div>
+
+  <!-- Dados do cliente -->
+  <div class="section-label">Dados do Cliente</div>
+  <div class="client-box">
+    <div class="client-name">${cl.nome}</div>
+    <div class="client-info">
+      ${cl.telefone ? '📱 '+cl.telefone+'<br>' : ''}
+      ${cl.endereco ? '📍 '+cl.endereco : ''}
+    </div>
+  </div>
+
+  <!-- Tabela de itens -->
+  <div class="section-label">Serviços & Materiais</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Descrição</th>
+        <th style="text-align:center;">Unid.</th>
+        <th style="text-align:center;">Qtd.</th>
+        <th style="text-align:right;">Valor Unit.</th>
+        <th style="text-align:right;">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${linhasItens || '<tr><td colspan="6" style="text-align:center;color:#8892aa;padding:20px;">Nenhum item</td></tr>'}
+    </tbody>
+  </table>
+
+  <!-- Totais -->
+  <div class="totals">
+    <div class="totals-box">
+      <div class="total-row"><span>Subtotal</span><span>${fmt(c.venda)}</span></div>
+      <div class="total-row"><span>Desconto</span><span>R$ 0,00</span></div>
+      <div class="total-row main"><span>TOTAL</span><span>${fmt(c.venda)}</span></div>
+    </div>
+  </div>
+
+  <!-- Validade e observações -->
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-box-title">⏳ Validade do Orçamento</div>
+      <div class="info-box-content">Este orçamento é válido até<br><strong>${validade}</strong> (30 dias)</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-title">💳 Formas de Pagamento</div>
+      <div class="info-box-content">Pix · Transferência · Dinheiro<br>Condições a combinar.</div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-bottom:28px;">
+    <div class="info-box-title">📝 Observações</div>
+    <div class="info-box-content">Os valores acima referem-se exclusivamente aos serviços e materiais descritos. Serviços adicionais não previstos neste orçamento serão cobrados separadamente mediante aprovação prévia.</div>
+  </div>
+
+  <!-- Assinatura -->
+  <div class="assinatura">
+    <div class="ass-line">
+      <div class="ass-traço">Assinatura do Cliente</div>
+    </div>
+    <div class="ass-line">
+      <div class="ass-traço">RM Gesso — Responsável Técnico</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer" style="margin-top:40px;">
+    <div class="footer-brand">RM Gesso</div>
+    <div class="footer-note">
+      Documento gerado em ${new Date().toLocaleDateString('pt-BR')}<br>
+      Obrigado pela confiança!
+    </div>
+  </div>
+</div>
+
+<script>
+// WhatsApp — monta mensagem de texto
+const msgWpp = \`*RM Gesso — Orçamento*
+
+Olá, *${cl.nome}*! Segue o resumo do seu orçamento:
+
+📋 *${o.nome}*
+📅 Data: ${data}
+
+*Itens:*
+${o.itens.map(it => {
+  const s = getS ? getS(it.servicoId) : { nome: it.servicoId, venda: 0, unidade: '' };
+  return `• ${s.nome} — ${it.quantidade} ${s.unidade}`;
+}).join('\n')}
+
+💰 *Total: ${fmt(c.venda)}*
+
+Orçamento válido por 30 dias.
+Qualquer dúvida, estamos à disposição! 😊\`;
+
+document.getElementById('btnWhats').href = 'https://wa.me/?text=' + encodeURIComponent(msgWpp);
+${cl.telefone ? `
+const tel = '${cl.telefone}'.replace(/\\D/g,'');
+if(tel.length >= 10) {
+  document.getElementById('btnWhats').href = 'https://wa.me/55' + tel + '?text=' + encodeURIComponent(msgWpp);
+}` : ''}
+
+// Compartilhar nativo (mobile / desktop)
+function compartilharNativo() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Orçamento RM Gesso — ${o.nome}',
+      text: msgWpp,
+    }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(msgWpp).then(()=>{
+      alert('Texto do orçamento copiado! Cole onde quiser.');
+    });
+  }
+}
+<\/script>
+</body>
+</html>`;
+}
+
+function imprimirOrcamento(id) {
+  const html = gerarHTMLOrcamento(id);
+  const win = window.open('', '_blank', 'width=900,height=700,scrollbars=yes');
+  win.document.write(html);
+  win.document.close();
+}
+
+function compartilharWhats(id) {
+  const o  = state.obras.find(x=>x.id===id);
+  const cl = getC(o.clienteId);
+  const c  = calcObra(o);
+  const linhas = o.itens.map(it => {
+    const s = getS(it.servicoId);
+    return `• ${s.nome} — ${it.quantidade} ${s.unidade} = ${fmt(s.venda*it.quantidade)}`;
+  }).join('\n');
+  const msg = `*RM Gesso — Orçamento*\n\nOlá, *${cl.nome}*!\n\n📋 *${o.nome}*\n📅 Data: ${fmtData(o.dataInicio)}\n\n*Itens:*\n${linhas}\n\n💰 *Total: ${fmt(c.venda)}*\n\nOrçamento válido por 30 dias.\nQualquer dúvida, estamos à disposição! 😊`;
+  const tel = cl.telefone ? cl.telefone.replace(/\D/g,'') : '';
+  const url = tel.length >= 10
+    ? `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`
+    : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
 }
 
 // ── INIT ───────────────────────────────────────────

@@ -41,7 +41,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Barlow', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -92,10 +92,11 @@ body {
 .brand-info { flex: 1; min-width: 0; }
 
 .brand-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 700; font-size: 18px;
-  color: var(--white); letter-spacing: 0.3px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 20px;
+  color: var(--white); letter-spacing: 1px;
   line-height: 1;
+  text-transform: uppercase;
 }
 
 .brand-sub {
@@ -177,8 +178,9 @@ body {
 .hamburger { display: none; background: none; border: none; color: var(--text2); font-size: 20px; cursor: pointer; }
 
 .topbar-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Rajdhani', sans-serif;
   font-weight: 700; font-size: 20px; flex: 1; color: var(--blue-dark);
+  text-transform: uppercase; letter-spacing: 1px;
 }
 
 .topbar-actions { display: flex; gap: 8px; align-items: center; }
@@ -230,8 +232,9 @@ body {
 }
 
 .card-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 700; font-size: 17px; color: var(--blue-dark); margin-bottom: 16px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 16px; color: var(--blue-dark); margin-bottom: 16px;
+  text-transform: uppercase; letter-spacing: 0.5px;
 }
 
 /* ── STAT CARDS ──────────────────────────────────── */
@@ -268,8 +271,9 @@ body {
 
 .stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
 .stat-value {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 700; font-size: 26px; color: var(--text); line-height: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 28px; color: var(--text); line-height: 1;
+  letter-spacing: 0.5px;
 }
 .stat-value.c-green  { color: var(--green); }
 .stat-value.c-red    { color: var(--red); }
@@ -321,7 +325,7 @@ tfoot td { padding: 12px 16px; background: var(--off-white); border-top: 2px sol
 .form-group textarea {
   width: 100%; background: var(--white); border: 1.5px solid var(--border);
   border-radius: 8px; padding: 10px 13px; color: var(--text);
-  font-family: 'Outfit', sans-serif; font-size: 14px; outline: none;
+  font-family: 'Barlow', sans-serif; font-size: 14px; outline: none;
   transition: border-color 0.18s;
 }
 .form-group input:focus,
@@ -354,8 +358,9 @@ tfoot td { padding: 12px 16px; background: var(--off-white); border-top: 2px sol
   border-bottom: 1px solid var(--border); padding-bottom: 18px;
 }
 .modal-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Rajdhani', sans-serif;
   font-weight: 700; font-size: 20px; color: var(--blue-dark);
+  text-transform: uppercase; letter-spacing: 0.5px;
 }
 .modal-close {
   background: var(--off-white); border: 1px solid var(--border);
@@ -393,8 +398,9 @@ tfoot td { padding: 12px 16px; background: var(--off-white); border-top: 2px sol
   margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
 }
 .page-header h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 700; font-size: 26px; color: var(--blue-dark); line-height: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 28px; color: var(--blue-dark); line-height: 1;
+  text-transform: uppercase; letter-spacing: 1px;
 }
 .page-header p { font-size: 13px; color: var(--text3); margin-top: 3px; }
 
@@ -410,7 +416,7 @@ tfoot td { padding: 12px 16px; background: var(--off-white); border-top: 2px sol
   background: var(--white); border: 1.5px solid var(--border);
   border-radius: 8px; padding: 8px 12px 8px 34px;
   color: var(--text); font-size: 13px;
-  font-family: 'Outfit', sans-serif; outline: none; width: 220px;
+  font-family: 'Barlow', sans-serif; outline: none; width: 220px;
   transition: border-color 0.18s;
 }
 .search-bar input:focus { border-color: var(--blue-dark); }
@@ -438,7 +444,7 @@ tfoot td { padding: 12px 16px; background: var(--off-white); border-top: 2px sol
 }
 .dash-list-item:last-child { border-bottom: none; }
 .dash-list-item .name { color: var(--text); font-weight: 500; flex: 1; }
-.dash-list-item .val  { color: var(--gold); font-weight: 600; font-family: 'Cormorant Garamond', serif; font-size: 15px; }
+.dash-list-item .val  { color: var(--gold); font-weight: 700; font-family: 'Rajdhani', sans-serif; font-size: 16px; }
 
 /* ── OBRA ITENS ──────────────────────────────────── */
 .item-row {
@@ -496,8 +502,9 @@ tfoot td { padding: 12px 16px; background: var(--off-white); border-top: 2px sol
 .orc-card-title { font-weight: 600; font-size: 14.5px; color: var(--text); }
 .orc-card-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
 .orc-card-total {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 700; font-size: 22px; color: var(--blue-dark); white-space: nowrap;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 24px; color: var(--blue-dark); white-space: nowrap;
+  letter-spacing: 0.5px;
 }
 .orc-card-items { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: none; }
 .orc-card-items.open { display: block; }
@@ -514,7 +521,10 @@ tfoot td { padding: 12px 16px; background: var(--off-white); border-top: 2px sol
 .c-blue   { color: var(--blue-dark) !important; }
 .fw-6 { font-weight: 600; }
 .text-muted { color: var(--text3); font-size: 12px; }
-.font-serif { font-family: 'Cormorant Garamond', serif; font-weight: 700; }
+.font-serif { font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 0.5px; }
+.btn { font-family: 'Barlow', sans-serif; }
+.btn-export { font-family: 'Barlow', sans-serif; }
+.btn-share { font-family: 'Barlow', sans-serif; }
 .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 select option { background: var(--white); color: var(--text); }
@@ -537,6 +547,19 @@ select option { background: var(--white); color: var(--text); }
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── BOTÕES DE COMPARTILHAR ──────────────────────── */
+.btn-share {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 8px; border: none;
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  font-size: 12.5px; font-weight: 500; transition: all 0.18s;
+  white-space: nowrap;
+}
+.btn-share.whats { background: #25d366; color: #fff; }
+.btn-share.whats:hover { background: #1ebe5d; }
+.btn-share.print { background: var(--blue-light); color: var(--blue-dark); border: 1px solid var(--border2); }
+.btn-share.print:hover { background: var(--blue-dark); color: #fff; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
