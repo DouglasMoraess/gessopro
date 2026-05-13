@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GessoPro — Sistema de Gestão</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">⬡</div>
+        <div>
+          <div class="logo-title">GessoPro</div>
+          <div class="logo-sub">Gestão de Obras</div>
+        </div>
+      </div>
+      <button class="sidebar-close" id="sidebarClose">✕</button>
+    </div>
+    <nav class="nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">◈</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="clientes">
+        <span class="nav-icon">◉</span> Clientes
+      </a>
+      <a href="#" class="nav-item" data-page="produtos">
+        <span class="nav-icon">◧</span> Produtos
+      </a>
+      <a href="#" class="nav-item" data-page="obras">
+        <span class="nav-icon">◫</span> Obras
+      </a>
+      <a href="#" class="nav-item" data-page="financeiro">
+        <span class="nav-icon">◎</span> Financeiro
+      </a>
+      <a href="#" class="nav-item" data-page="despesas">
+        <span class="nav-icon">◐</span> Despesas
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-export" id="btnExport">↓ Exportar Dados</button>
+    </div>
+  </aside>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN -->
+  <div class="main" id="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-actions" id="topbarActions"></div>
+    </header>
+
+    <div class="content" id="content">
+      <!-- Pages injected by JS -->
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Modal</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
