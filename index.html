@@ -3,80 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GessoPro — Sistema de Gestão</title>
+  <title>RM Gesso — Sistema de Gestão</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">
-        <div class="logo-icon">⬡</div>
-        <div>
-          <div class="logo-title">GessoPro</div>
-          <div class="logo-sub">Gestão de Obras</div>
-        </div>
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <img src="logo.png" alt="RM Gesso" class="brand-img"
+          onerror="this.style.display='none';document.getElementById('brandFallback').style.display='flex'"/>
+        <div class="brand-fallback" id="brandFallback">RM</div>
+      </div>
+      <div class="brand-info">
+        <div class="brand-name">RM Gesso</div>
+        <div class="brand-sub">Gestão de Obras</div>
       </div>
       <button class="sidebar-close" id="sidebarClose">✕</button>
     </div>
+
     <nav class="nav">
+      <div class="nav-label">Principal</div>
       <a href="#" class="nav-item active" data-page="dashboard">
-        <span class="nav-icon">◈</span> Dashboard
+        <svg class="ni" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Dashboard
       </a>
-      <a href="#" class="nav-item" data-page="clientes">
-        <span class="nav-icon">◉</span> Clientes
-      </a>
-      <a href="#" class="nav-item" data-page="produtos">
-        <span class="nav-icon">◧</span> Produtos
+      <a href="#" class="nav-item" data-page="orcamentos">
+        <svg class="ni" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Orçamentos
       </a>
       <a href="#" class="nav-item" data-page="obras">
-        <span class="nav-icon">◫</span> Obras
+        <svg class="ni" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Obras
       </a>
+
+      <div class="nav-label">Cadastros</div>
+      <a href="#" class="nav-item" data-page="clientes">
+        <svg class="ni" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Clientes
+      </a>
+      <a href="#" class="nav-item" data-page="servicos">
+        <svg class="ni" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        Serviços & Materiais
+      </a>
+
+      <div class="nav-label">Financeiro</div>
       <a href="#" class="nav-item" data-page="financeiro">
-        <span class="nav-icon">◎</span> Financeiro
+        <svg class="ni" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Financeiro
       </a>
       <a href="#" class="nav-item" data-page="despesas">
-        <span class="nav-icon">◐</span> Despesas
+        <svg class="ni" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Despesas
       </a>
     </nav>
+
     <div class="sidebar-footer">
-      <button class="btn-export" id="btnExport">↓ Exportar Dados</button>
+      <button class="btn-export" id="btnExport">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar Dados
+      </button>
     </div>
   </aside>
 
-  <!-- OVERLAY -->
   <div class="overlay" id="overlay"></div>
 
-  <!-- MAIN -->
   <div class="main" id="main">
     <header class="topbar">
       <button class="hamburger" id="hamburger">☰</button>
       <div class="topbar-title" id="topbarTitle">Dashboard</div>
       <div class="topbar-actions" id="topbarActions"></div>
     </header>
-
-    <div class="content" id="content">
-      <!-- Pages injected by JS -->
-    </div>
+    <div class="content" id="content"></div>
   </div>
 
   <!-- MODAL -->
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal" id="modal">
       <div class="modal-header">
-        <h2 class="modal-title" id="modalTitle">Modal</h2>
+        <h2 class="modal-title" id="modalTitle"></h2>
         <button class="modal-close" id="modalClose">✕</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
     </div>
   </div>
 
-  <!-- TOAST -->
   <div class="toast" id="toast"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
